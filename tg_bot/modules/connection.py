@@ -7,7 +7,7 @@ from telegram.error import BadRequest, Unauthorized
 from telegram.ext import CommandHandler, CallbackQueryHandler, run_async
 
 import tg_bot.modules.sql.connection_sql as sql
-from tg_bot import dispatcher, SUDO_USERS, DEV_USERS
+from tg_bot import dispatcher, SUDO_USERS
 from tg_bot.modules.helper_funcs import chat_status
 from tg_bot.modules.helper_funcs.alternate import send_message
 
@@ -95,7 +95,7 @@ def connect_chat(bot: Bot, update: Update, args: List[str]):
             ismember = getstatusadmin.status in MEMBER_STAUS
             isallow = sql.allow_connect_to_chat(connect_chat)
 
-            if isadmin or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+            if isadmin or (isallow and ismember) or (user.id in SUDO_USERS):
                 connection_status = sql.connect(msg.from_user.id, connect_chat)
                 if connection_status:
                     conn_chat = dispatcher.bot.getChat(connected(bot, update, chat, user.id, need_admin=False))
@@ -151,7 +151,7 @@ def connect_chat(bot: Bot, update: Update, args: List[str]):
         isadmin = getstatusadmin.status in ADMIN_STATUS
         ismember = getstatusadmin.status in MEMBER_STAUS
         isallow = sql.allow_connect_to_chat(chat.id)
-        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS):
             connection_status = sql.connect(msg.from_user.id, chat.id)
             if connection_status:
                 chat_name = dispatcher.bot.getChat(chat.id).title
@@ -175,7 +175,6 @@ def connect_chat(bot: Bot, update: Update, args: List[str]):
 def disconnect_chat(bot: Bot, update: Update):
     chat = update.effective_chat
     msg = update.effective_message
-
     if chat.type == 'private':
         disconnection_status = sql.disconnect(msg.from_user.id)
         if disconnection_status:
@@ -189,7 +188,6 @@ def disconnect_chat(bot: Bot, update: Update):
 def connected(bot, update, chat, user_id, need_admin=True):
     user = update.effective_user
     msg = update.effective_message
-
     if chat.type == chat.PRIVATE and sql.get_connected_chat(user_id):
 
         conn_id = sql.get_connected_chat(user_id).chat_id
@@ -198,9 +196,9 @@ def connected(bot, update, chat, user_id, need_admin=True):
         ismember = getstatusadmin.status in MEMBER_STAUS
         isallow = sql.allow_connect_to_chat(conn_id)
 
-        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS):
             if need_admin is True:
-                if getstatusadmin.status in ADMIN_STATUS or user_id in SUDO_USERS or user.id in DEV_USERS:
+                if getstatusadmin.status in ADMIN_STATUS or user_id in SUDO_USERS:
                     return conn_id
                 else:
                     send_message(msg, "You must be an admin in the connected group!")
@@ -219,7 +217,6 @@ def connected(bot, update, chat, user_id, need_admin=True):
 @run_async
 def help_connect_chat(bot: Bot, update: Update):
     msg = update.effective_message
-
     if msg.chat.type != "private":
         send_message(msg, "PM me with that command to get help.")
         return
@@ -245,7 +242,7 @@ def connect_button(bot: Bot, update: Update):
         ismember = getstatusadmin.status in MEMBER_STAUS
         isallow = sql.allow_connect_to_chat(target_chat)
 
-        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS) or (user.id in DEV_USERS):
+        if isadmin or (isallow and ismember) or (user.id in SUDO_USERS):
             connection_status = sql.connect(query.from_user.id, target_chat)
 
             if connection_status:

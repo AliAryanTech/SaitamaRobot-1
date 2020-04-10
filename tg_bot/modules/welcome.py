@@ -12,7 +12,7 @@ from telegram.ext import MessageHandler, Filters, CommandHandler, run_async, Cal
 from telegram.utils.helpers import mention_markdown, mention_html, escape_markdown
 
 import tg_bot.modules.sql.welcome_sql as sql
-from tg_bot import dispatcher, OWNER_ID, DEV_USERS, SUDO_USERS, SUPPORT_USERS, TIGER_USERS, WHITELIST_USERS, LOGGER
+from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, LOGGER
 from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_ban_protected
 from tg_bot.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from tg_bot.modules.helper_funcs.msg_types import get_welcome_type
@@ -98,25 +98,9 @@ def new_member(bot: Bot, update: Update, job_queue: JobQueue):
                                f"#USER_JOINED\n"
                                f"Bot Owner just joined the chat")
 
-            # Welcome Devs
-            elif new_mem.id in DEV_USERS:
-                update.effective_message.reply_text("Whoa! A member of the Heroes Association just joined!")
-
             # Welcome Sudos
             elif new_mem.id in SUDO_USERS:
                 update.effective_message.reply_text("Huh! A Dragon disaster just joined! Stay Alert!")
-
-            # Welcome Support
-            elif new_mem.id in SUPPORT_USERS:
-                update.effective_message.reply_text("Huh! Someone with a Demon disaster level just joined!")
-
-            # Welcome Whitelisted
-            elif new_mem.id in TIGER_USERS:
-                update.effective_message.reply_text("Oof! A Tiger disaster just joined!")
-
-            # Welcome Tigers
-            elif new_mem.id in WHITELIST_USERS:
-                update.effective_message.reply_text("Oof! A Wolf disaster just joined!")
 
             # Welcome yourself
             elif new_mem.id == bot.id:
@@ -266,10 +250,6 @@ def left_member(bot: Bot, update: Update):
     if should_goodbye:
         left_mem = update.effective_message.left_chat_member
         if left_mem:
-            # Dont say goodbyes to gbanned users
-            if is_user_gbanned(left_mem.id):
-                return
-            
             # Ignore bot being kicked
             if left_mem.id == bot.id:
                 return
@@ -277,11 +257,6 @@ def left_member(bot: Bot, update: Update):
             # Give the owner a special goodbye
             if left_mem.id == OWNER_ID:
                 update.effective_message.reply_text("Oi! Genos! He left..")
-                return
-
-            # Give the devs a special goodbye
-            elif left_mem.id in DEV_USERS:
-                update.effective_message.reply_text("See you later at the Hero's Association!")
                 return
 
             # if media goodbye, use appropriate function for it

@@ -22,44 +22,25 @@
          "description": "Set this to True if you want to delete command messages from users who don't have the perms to run that command.",
          "value": "True"
       },
-      "DONATION_LINK": {
-         "description": "Optional: link where you would like to receive donations.",
-         "required": false,
-         "value": "https://www.paypal.me/PaulSonOfLars"
-      },
       "ENV": {
          "description": "Setting this to ANYTHING will enable environment variables.",
          "value": "ANYTHING"
-      },
-      "SQLALCHEMY_DATABASE_URI": {
-         "description": "Your postgres sql db, empty this field if you dont have one.",
-         "required": false,
-         "value": "sqldbtype://username:pw@hostname:port/db_name"
       },      
       "OWNER_ID": {
          "description": "Your user ID as an integer.",
-         "value": "792109647"
+         "value": "1234567"
       },
       "OWNER_USERNAME": {
          "description": "Your username",
-         "value": "AnimeKaizoku"
-      },
-      "DEV_USERS": {
-         "description": "ID of users who are Dev (can use /py etc.)",
-         "required": false,
-         "value": "660565862 792109647"
+         "value": "UserName"
       },
       "GBAN_LOGS": {
          "description": "Gban log channel, include the hyphen too: ex: -123456",
          "value": "-123"
       },
-      "CASH_API_KEY": {
-         "description": "Required for currency converter",
-         "value": "-xyz"
-      },
-      "TIME_API_KEY": {
-         "description": "Required for timezone information",
-         "value": "-xyz"
+      "FED_LOGS": {
+         "description": "Fed log channel, include the hyphen too: ex: -123456",
+         "value": "-123"
       },
       "PORT": {
          "description": "Port to use for your webhooks.",
@@ -73,17 +54,7 @@
       "SUDO_USERS": {
          "description": "A space separated list of user IDs who you want to assign as sudo users.",
          "required": false,
-         "value": "459034222 189005567 660565862 346981140 367222759"
-      },
-      "SUPPORT_USERS": {
-         "description": "A space separated list of user IDs who you wanna assign as support users(gban perms only).",
-         "required": false,
-         "value": "615304572"
-      },
-      "TIGER_USERS": {
-         "description": "A space separated list of user IDs who you wanna assign as tiger users.",
-         "required": false,
-         "value": ""
+         "value": "1234567"
       },
       "TOKEN": {
          "description": "Your bot token.",
@@ -92,16 +63,6 @@
       },
       "URL": {
          "description": "The Heroku App URL :-  https://<appname>.herokuapp.com/",
-         "required": false,
-         "value": ""
-      },
-      "WEBHOOK": {
-         "description": "Setting this to ANYTHING will enable webhooks.",
-         "required": false,
-         "value": ""
-      },
-      "WHITELIST_USERS": {
-         "description": "A space separated list of user IDs who you want to assign as whitelisted - can't be banned with your bot.",
          "required": false,
          "value": ""
       }
@@ -114,5 +75,6 @@
       "Saitama"
    ],
    "name": "Saitama Robot",
-   "repository": "https://github.com/AnimeKaizoku/SaitamaRobot"
+   "repository": "https://github.com/AnimeKaizoku/SaitamaRobot",
+   "logo": "http://pngimg.com/uploads/robot/robot_PNG101.png"
 }

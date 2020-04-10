@@ -8,7 +8,7 @@ from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, F
 from telegram.ext.dispatcher import run_async, DispatcherHandlerStop
 from telegram.utils.helpers import escape_markdown
 
-from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, DONATION_LINK, CERT_PATH, PORT, URL, LOGGER, \
+from tg_bot import dispatcher, updater, TOKEN, WEBHOOK, OWNER_ID, CERT_PATH, PORT, URL, LOGGER, \
     ALLOW_EXCL
 # needed to dynamically load modules
 # NOTE: Module order is not guaranteed, specify that in the config file!
@@ -17,39 +17,27 @@ from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
 
 PM_START_TEXT = """
-Hi {}, my name is {}! 
-I am an Anime themed group management bot.
+Hi {}, my name is {}! If you have any questions on how to use me, read /help
 
-You can find the list of available commands with /help.
-
-[Saitama's Repo](github.com/AnimeKaizoku/SaitamaRobot) 
+I'm using this repo ==> [Saitama's Repo](github.com/AnimeKaizoku/SaitamaRobot) 
 See [Basic Configuration Checklist](t.me/OnePunchUpdates/29) on how to secure your groups.
 The support group chat is at @OnePunchSupport
 """
 
 HELP_STRINGS = """
 Hey there! My name is *{}*.
-I'm a Hero For Fun and help admins manage their groups with One Punch! Have a look at the following for an idea of some of \
+I'm a modular group management bot with a few fun extras! Have a look at the following for an idea of some of \
 the things I can help you with.
 
 *Main* commands available:
  - /start: start the bot
  - /help: PM's you this message.
  - /help <module name>: PM's you info about that module.
- - /donate: information about how to donate!
- - /settings:
-   - in PM: will send you your settings for all supported modules.
-   - in a group: will redirect you to pm, with all that chat's settings.
-
 
 {}
 And the following:
 """.format(dispatcher.bot.first_name, "" if not ALLOW_EXCL else "\nAll commands can either be used with / or !.\n")
 
-DONATE_STRING = """Heya, glad to hear you want to donate!
-Saitama is hosted on one of Kaizoku's Servers and doesn't require any donations as of now but \
-You can donate to the original writer of the Base code, Paul
-There are two ways of supporting him; [PayPal](paypal.me/PaulSonOfLars), or [Monzo](monzo.me/paulnionvestergaardlarsen)."""
 
 IMPORTED = {}
 MIGRATEABLE = []
@@ -177,8 +165,8 @@ def error_callback(bot, update, error):
 def help_button(bot: Bot, update: Update):
     query = update.callback_query
     mod_match = re.match(r"help_module\((.+?)\)", query.data)
-    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
-    next_match = re.match(r"help_next\((.+?)\)", query.data)
+#     prev_match = re.match(r"help_prev\((.+?)\)", query.data)
+#     next_match = re.match(r"help_next\((.+?)\)", query.data)
     back_match = re.match(r"help_back", query.data)
     try:
         if mod_match:
@@ -190,19 +178,19 @@ def help_button(bot: Bot, update: Update):
                                      reply_markup=InlineKeyboardMarkup(
                                          [[InlineKeyboardButton(text="Back", callback_data="help_back")]]))
 
-        elif prev_match:
-            curr_page = int(prev_match.group(1))
-            query.message.reply_text(HELP_STRINGS,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(curr_page - 1, HELPABLE, "help")))
+#         elif prev_match:
+#             curr_page = int(prev_match.group(1))
+#             query.message.reply_text(HELP_STRINGS,
+#                                      parse_mode=ParseMode.MARKDOWN,
+#                                      reply_markup=InlineKeyboardMarkup(
+#                                          paginate_modules(curr_page - 1, HELPABLE, "help")))
 
-        elif next_match:
-            next_page = int(next_match.group(1))
-            query.message.reply_text(HELP_STRINGS,
-                                     parse_mode=ParseMode.MARKDOWN,
-                                     reply_markup=InlineKeyboardMarkup(
-                                         paginate_modules(next_page + 1, HELPABLE, "help")))
+#         elif next_match:
+#             next_page = int(next_match.group(1))
+#             query.message.reply_text(HELP_STRINGS,
+#                                      parse_mode=ParseMode.MARKDOWN,
+#                                      reply_markup=InlineKeyboardMarkup(
+#                                          paginate_modules(next_page + 1, HELPABLE, "help")))
 
         elif back_match:
             query.message.reply_text(text=HELP_STRINGS,
@@ -211,7 +199,7 @@ def help_button(bot: Bot, update: Update):
 
         # ensure no spinny white circle
         bot.answer_callback_query(query.id)
-        query.message.delete()
+#         query.message.delete()
     except BadRequest as excp:
         if excp.message == "Message is not modified":
             pass

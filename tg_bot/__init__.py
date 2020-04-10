@@ -33,38 +33,18 @@ if ENV:
 
     try:
         SUDO_USERS = set(int(x) for x in os.environ.get("SUDO_USERS", "").split())
-        DEV_USERS = set(int(x) for x in os.environ.get("DEV_USERS", "").split())
     except ValueError:
-        raise Exception("Your sudo or dev users list does not contain valid integers.")
+        raise Exception("Your sudo users list does not contain valid integers.")
 
-    try:
-        SUPPORT_USERS = set(int(x) for x in os.environ.get("SUPPORT_USERS", "").split())
-    except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
-
-    try:
-        SPAMMERS = set(int(x) for x in os.environ.get("SPAMMERS", "").split())
-    except ValueError:
-        raise Exception("Your spammers users list does not contain valid integers.")
-
-    try:
-        WHITELIST_USERS = set(int(x) for x in os.environ.get("WHITELIST_USERS", "").split())
-    except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
-
-    try:
-        TIGER_USERS = set(int(x) for x in os.environ.get("TIGER_USERS", "").split())
-    except ValueError:
-        raise Exception("Your tiger users list does not contain valid integers.")
 
     GBAN_LOGS = os.environ.get('GBAN_LOGS', None)
+    FED_LOGS = os.environ.get('FED_LOGS', None)
     WEBHOOK = bool(os.environ.get('WEBHOOK', False))
     URL = os.environ.get('URL', "")  # Does not contain token
     PORT = int(os.environ.get('PORT', 5000))
     CERT_PATH = os.environ.get("CERT_PATH")
-
+	
     DB_URI = os.environ.get('DATABASE_URL')
-    DONATION_LINK = os.environ.get('DONATION_LINK')
     LOAD = os.environ.get("LOAD", "").split()
     NO_LOAD = os.environ.get("NO_LOAD", "translation").split()
     DEL_CMDS = bool(os.environ.get('DEL_CMDS', False))
@@ -72,11 +52,6 @@ if ENV:
     WORKERS = int(os.environ.get('WORKERS', 8))
     BAN_STICKER = os.environ.get('BAN_STICKER', 'CAADAgADOwADPPEcAXkko5EB3YGYAg')
     ALLOW_EXCL = os.environ.get('ALLOW_EXCL', False)
-    CASH_API_KEY = os.environ.get('CASH_API_KEY', None)
-    TIME_API_KEY = os.environ.get('TIME_API_KEY', None)
-    AI_API_KEY = os.environ.get('AI_API_KEY', None)
-    WALL_API = os.environ.get('WALL_API', None)
-    STRICT_GMUTE = bool(os.environ.get('STRICT_GMUTE', False))
 
 
 else:
@@ -93,38 +68,18 @@ else:
 
     try:
         SUDO_USERS = set(int(x) for x in Config.SUDO_USERS or [])
-        DEV_USERS = set(int(x) for x in Config.DEV_USERS or [])
+        raise Exception("Your sudo users list does not contain valid integers.")
     except ValueError:
         raise Exception("Your sudo or dev users list does not contain valid integers.")
 
-    try:
-        SUPPORT_USERS = set(int(x) for x in Config.SUPPORT_USERS or [])
-    except ValueError:
-        raise Exception("Your support users list does not contain valid integers.")
-
-    try:
-        SPAMMERS = set(int(x) for x in Config.SPAMMERS or [])
-    except ValueError:
-        raise Exception("Your spammers users list does not contain valid integers.")
-
-    try:
-        WHITELIST_USERS = set(int(x) for x in Config.WHITELIST_USERS or [])
-    except ValueError:
-        raise Exception("Your whitelisted users list does not contain valid integers.")
-
-    try:
-        TIGER_USERS = set(int(x) for x in Config.TIGER_USERS or [])
-    except ValueError:
-        raise Exception("Your tiger users list does not contain valid integers.")
-
     GBAN_LOGS = Config.GBAN_LOGS
+    FED_LOGS = Config.FED_LOGS
     WEBHOOK = Config.WEBHOOK
     URL = Config.URL
     PORT = Config.PORT
     CERT_PATH = Config.CERT_PATH
-
+	
     DB_URI = Config.SQLALCHEMY_DATABASE_URI
-    DONATION_LINK = Config.DONATION_LINK
     LOAD = Config.LOAD
     NO_LOAD = Config.NO_LOAD
     DEL_CMDS = Config.DEL_CMDS
@@ -132,25 +87,13 @@ else:
     WORKERS = Config.WORKERS
     BAN_STICKER = Config.BAN_STICKER
     ALLOW_EXCL = Config.ALLOW_EXCL
-    CASH_API_KEY = Config.CASH_API_KEY
-    TIME_API_KEY = Config.TIME_API_KEY
-    AI_API_KEY = Config.AI_API_KEY
-    WALL_API = Config.WALL_API
-    STRICT_GMUTE = Config.STRICT_GMUTE
-    
 
 SUDO_USERS.add(OWNER_ID)
-DEV_USERS.add(OWNER_ID)
 
 updater = tg.Updater(TOKEN, workers=WORKERS)
 dispatcher = updater.dispatcher
 
-SUDO_USERS = list(SUDO_USERS) + list(DEV_USERS)
-DEV_USERS = list(DEV_USERS)
-WHITELIST_USERS = list(WHITELIST_USERS)
-SUPPORT_USERS = list(SUPPORT_USERS)
-TIGER_USERS = list(TIGER_USERS)
-SPAMMERS = list(SPAMMERS)
+SUDO_USERS = list(SUDO_USERS)
 
 # Load at end to ensure all prev variables have been set
 from tg_bot.modules.helper_funcs.handlers import CustomCommandHandler, CustomRegexHandler, CustomMessageHandler

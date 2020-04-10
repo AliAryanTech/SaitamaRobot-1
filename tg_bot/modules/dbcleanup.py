@@ -6,8 +6,7 @@ from telegram.ext import CommandHandler, CallbackQueryHandler, run_async
 
 import tg_bot.modules.sql.global_bans_sql as gban_sql
 import tg_bot.modules.sql.users_sql as user_sql
-from tg_bot import dispatcher, OWNER_ID, DEV_USERS
-from tg_bot.modules.helper_funcs.chat_status import dev_plus
+from tg_bot import dispatcher, OWNER_ID
 
 
 def get_invalid_chats(bot: Bot, update: Update, remove: bool = False):
@@ -80,7 +79,6 @@ def get_invalid_gban(bot: Bot, update: Update, remove: bool = False):
 
 
 @run_async
-@dev_plus
 def dbcleanup(bot: Bot, update: Update):
     msg = update.effective_message
 
@@ -150,7 +148,6 @@ def get_muted_chats(bot: Bot, update: Update, leave: bool = False):
 
 
 @run_async
-@dev_plus
 def leave_muted_chats(bot: Bot, update: Update):
     message = update.effective_message
     progress_message = message.reply_text("Getting chat count ...")
@@ -172,7 +169,7 @@ def callback_button(bot: Bot, update: Update):
     chat_id = update.effective_chat.id
     query_type = query.data
 
-    admin_list = [OWNER_ID] + DEV_USERS
+    admin_list = [OWNER_ID]
 
     bot.answer_callback_query(query.id)
 

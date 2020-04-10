@@ -7,7 +7,7 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 
 from tg_bot import ALLOW_EXCL, dispatcher, CustomCommandHandler
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import user_admin, bot_can_delete, dev_plus, connection_status
+from tg_bot.modules.helper_funcs.chat_status import user_admin, bot_can_delete, connection_status
 from tg_bot.modules.sql import cleaner_sql as sql
 
 if ALLOW_EXCL:
@@ -17,8 +17,8 @@ else:
 
 BLUE_TEXT_CLEAN_GROUP = 15
 CommandHandlerList = (CommandHandler, CustomCommandHandler, DisableAbleCommandHandler)
-command_list = ["cleanblue", "ignoreblue", "unignoreblue", "listblue", "ungignoreblue", "gignoreblue"
-                "start", "help", "settings", "donate", "stalk", "aka", "leaderboard"]
+command_list = ["cleanbluetext", "ignorecleanbluetext", "unignorecleanbluetext", "listcleanbluetext", "ignoreglobalcleanbluetext", "unignoreglobalcleanbluetext"
+                "start", "help", "settings", "donate"]
 
 for handler_list in dispatcher.handlers:
     for handler in dispatcher.handlers[handler_list]:
@@ -146,7 +146,6 @@ def add_bluetext_ignore_global(bot: Bot, update: Update, args: List[str]):
 
 
 @run_async
-@dev_plus
 def remove_bluetext_ignore_global(bot: Bot, update: Update, args: List[str]):
 
     message = update.effective_message
@@ -166,7 +165,6 @@ def remove_bluetext_ignore_global(bot: Bot, update: Update, args: List[str]):
 
 
 @run_async
-@dev_plus
 def bluetext_ignore_list(bot: Bot, update: Update):
 
     message = update.effective_message
@@ -197,22 +195,18 @@ def bluetext_ignore_list(bot: Bot, update: Update):
 
 
 __help__ = """
- - /cleanblue <on/off/yes/no> - clean commands after sending
- - /ignoreblue <word> - prevent auto cleaning of the command
- - /unignoreblue <word> - remove prevent auto cleaning of the command
- - /listblue - list currently whitelisted commands
- 
- Following are Disasters only commands, admins cannot use these:
-  - /gignoreblue <word> - globally ignore bluetext cleaning of saved word across Saitama.
- - /ungignoreblue <word> - remove said command from global cleaning list
+ - /cleanbluetext <on/off/yes/no> - clean commands after sending
+ - /ignorecleanbluetext <word> - prevent auto cleaning of the command
+ - /unignorecleanbluetext <word> - remove prevent auto cleaning of the command
+ - /listcleanbluetext - list currently whitelisted commands
 """
 
-SET_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("cleanblue", set_blue_text_must_click, pass_args=True)
-ADD_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("ignoreblue", add_bluetext_ignore, pass_args=True)
-REMOVE_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("unignoreblue", remove_bluetext_ignore, pass_args=True)
-ADD_CLEAN_BLUE_TEXT_GLOBAL_HANDLER = CommandHandler("gignoreblue", add_bluetext_ignore_global, pass_args=True)
-REMOVE_CLEAN_BLUE_TEXT_GLOBAL_HANDLER = CommandHandler("ungignoreblue", remove_bluetext_ignore_global, pass_args=True)
-LIST_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("listblue", bluetext_ignore_list)
+SET_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("cleanbluetext", set_blue_text_must_click, pass_args=True)
+ADD_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("ignorecleanbluetext", add_bluetext_ignore, pass_args=True)
+REMOVE_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("unignorecleanbluetext", remove_bluetext_ignore, pass_args=True)
+ADD_CLEAN_BLUE_TEXT_GLOBAL_HANDLER = CommandHandler("ignoreglobalcleanbluetext", add_bluetext_ignore_global, pass_args=True)
+REMOVE_CLEAN_BLUE_TEXT_GLOBAL_HANDLER = CommandHandler("unignoreglobalcleanbluetext", remove_bluetext_ignore_global, pass_args=True)
+LIST_CLEAN_BLUE_TEXT_HANDLER = CommandHandler("listcleanbluetext", bluetext_ignore_list)
 CLEAN_BLUE_TEXT_HANDLER = MessageHandler(Filters.command & Filters.group, clean_blue_text_must_click)
 
 dispatcher.add_handler(SET_CLEAN_BLUE_TEXT_HANDLER)

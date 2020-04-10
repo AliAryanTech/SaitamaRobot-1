@@ -10,8 +10,8 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 from telegram.utils.helpers import mention_html
 
 import tg_bot.modules.sql.global_bans_sql as sql
-from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, DEV_USERS, SUPPORT_USERS, TIGER_USERS, WHITELIST_USERS, STRICT_GBAN, GBAN_LOGS
-from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_admin, support_plus
+from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, STRICT_GBAN, GBAN_LOGS
+from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_admin
 from tg_bot.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from tg_bot.modules.helper_funcs.misc import send_to_list
 from tg_bot.modules.sql.users_sql import get_all_chats
@@ -30,7 +30,7 @@ GBAN_ERRORS = {
     "Only the creator of a basic group can kick group administrators",
     "Channel_private",
     "Not in the chat",
-    "Can't remove chat owner"
+    "Could not gban due to Can't remove chat owner",
 }
 
 UNGBAN_ERRORS = {
@@ -47,7 +47,6 @@ UNGBAN_ERRORS = {
 
 
 @run_async
-@support_plus
 def gban(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
     user = update.effective_user
@@ -60,24 +59,8 @@ def gban(bot: Bot, update: Update, args: List[str]):
         message.reply_text("You don't seem to be referring to a user.")
         return
 
-    if int(user_id) in DEV_USERS:
-        message.reply_text("That user is part of the Association\nI can't act against our own.")
-        return
-
     if int(user_id) in SUDO_USERS:
         message.reply_text("I spy, with my little eye... a disaster! Why are you guys turning on each other?")
-        return
-
-    if int(user_id) in SUPPORT_USERS:
-        message.reply_text("OOOH someone's trying to gban a Demon Disaster! *grabs popcorn*")
-        return
-
-    if int(user_id) in TIGER_USERS:
-        message.reply_text("That's a Tiger! They cannot be banned!")
-        return
-
-    if int(user_id) in WHITELIST_USERS:
-        message.reply_text("That's a Wolf! They cannot be banned!")
         return
 
     if user_id == bot.id:
@@ -147,7 +130,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
                                    log_message + "\n\nFormatting has been disabled due to an unexpected error.")
 
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, log_message, html=True)
+        send_to_list(bot, SUDO_USERS, log_message, html=True)
 
     sql.gban_user(user_id, user_chat.username or user_chat.first_name, reason)
 
@@ -174,7 +157,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
                     bot.send_message(GBAN_LOGS, f"Could not gban due to {excp.message}",
                                      parse_mode=ParseMode.HTML)
                 else:
-                    send_to_list(bot, SUDO_USERS + SUPPORT_USERS, f"Could not gban due to: {excp.message}")
+                    send_to_list(bot, SUDO_USERS, f"Could not gban due to: {excp.message}")
                 sql.ungban_user(user_id)
                 return
         except TelegramError:
@@ -183,7 +166,7 @@ def gban(bot: Bot, update: Update, args: List[str]):
     if GBAN_LOGS:
         log.edit_text(log_message + f"\n<b>Chats affected:</b> {gbanned_chats}", parse_mode=ParseMode.HTML)
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, f"Gban complete! (User banned in {gbanned_chats} chats)")
+        send_to_list(bot, SUDO_USERS, f"Gban complete! (User banned in {gbanned_chats} chats)")
 
     end_time = time.time()
     gban_time = round((end_time - start_time), 2)
@@ -204,7 +187,6 @@ def gban(bot: Bot, update: Update, args: List[str]):
 
 
 @run_async
-@support_plus
 def ungban(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
     user = update.effective_user
@@ -251,7 +233,7 @@ def ungban(bot: Bot, update: Update, args: List[str]):
             log = bot.send_message(GBAN_LOGS,
                                    log_message + "\n\nFormatting has been disabled due to an unexpected error.")
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, log_message, html=True)
+        send_to_list(bot, SUDO_USERS, log_message, html=True)
 
     chats = get_all_chats()
     ungbanned_chats = 0
@@ -288,7 +270,7 @@ def ungban(bot: Bot, update: Update, args: List[str]):
     if GBAN_LOGS:
         log.edit_text(log_message + f"\n<b>Chats affected:</b> {ungbanned_chats}", parse_mode=ParseMode.HTML)
     else:
-        send_to_list(bot, SUDO_USERS + SUPPORT_USERS, "un-gban complete!")
+        send_to_list(bot, SUDO_USERS, "un-gban complete!")
 
     end_time = time.time()
     ungban_time = round((end_time - start_time), 2)
@@ -301,7 +283,6 @@ def ungban(bot: Bot, update: Update, args: List[str]):
 
 
 @run_async
-@support_plus
 def gbanlist(bot: Bot, update: Update):
     banned_users = sql.get_gban_list()
 

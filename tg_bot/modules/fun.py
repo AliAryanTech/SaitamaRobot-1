@@ -7,8 +7,9 @@ from telegram import Bot, Update, ParseMode
 from telegram.ext import run_async
 
 import tg_bot.modules.fun_strings as fun_strings
-from tg_bot import dispatcher
+from tg_bot import dispatcher, OWNER_ID
 from tg_bot.modules.disable import DisableAbleCommandHandler
+
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.extraction import extract_user
 
@@ -21,7 +22,7 @@ def runs(bot: Bot, update: Update):
 @run_async
 def slap(bot: Bot, update: Update, args: List[str]):
     message = update.effective_message
-    chat = update.effective_chat
+    user = update.effective_user
 
     reply_text = message.reply_to_message.reply_text if message.reply_to_message else message.reply_text
 
@@ -62,23 +63,8 @@ def slap(bot: Bot, update: Update, args: List[str]):
     reply = temp.format(user1=user1, user2=user2, item=item, hits=hit, throws=throw)
 
     reply_text(reply, parse_mode=ParseMode.HTML)
-
-
-@run_async
-def roll(bot: Bot, update: Update):
-    update.message.reply_text(random.choice(range(1, 7)))
-
-
-@run_async
-def toss(bot: Bot, update: Update):
-    update.message.reply_text(random.choice(fun_strings.TOSS))
-
-
-@run_async
-def abuse(bot: Bot, update: Update):
-    msg = update.effective_message
-    reply_text = msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
-    reply_text(random.choice(fun_strings.ABUSE_STRINGS))
+    
+    
 
 
 @run_async
@@ -86,33 +72,19 @@ def shrug(bot: Bot, update: Update):
     msg = update.effective_message
     reply_text = msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
     reply_text(r"¯\_(ツ)_/¯")
-
-
+    
+    
 @run_async
-def bluetext(bot: Bot, update: Update):
-    msg = update.effective_message
-    reply_text = msg.reply_to_message.reply_text if msg.reply_to_message else msg.reply_text
-    reply_text("/BLUE /TEXT\n/MUST /CLICK\n/I /AM /A /STUPID /ANIMAL /THAT /IS /ATTRACTED /TO /COLORS")
-
-
-@run_async
-def rlg(bot: Bot, update: Update):
-    eyes = random.choice(fun_strings.EYES)
-    mouth = random.choice(fun_strings.MOUTHS)
-    ears = random.choice(fun_strings.EARS)
-
-    if len(eyes) == 2:
-        repl = ears[0] + eyes[0] + mouth[0] + eyes[1] + ears[1]
-    else:
-        repl = ears[0] + eyes[0] + mouth[0] + eyes[0] + ears[1]
-    update.message.reply_text(repl)
-
-
-@run_async
-def decide(bot: Bot, update: Update):
+def insult(bot: Bot, update: Update, args: List[str]):
+    message = update.effective_message
+    user = update.effective_user
+    user_id = extract_user(message, args)
+    if user_id == OWNER_ID:
+        message.reply_text("Listen here you little sh*t. I will not Insult my Owner")
+        return
     reply_text = update.effective_message.reply_to_message.reply_text if update.effective_message.reply_to_message else update.effective_message.reply_text
-    reply_text(random.choice(fun_strings.DECIDE))
-
+    reply_text(random.choice(fun_strings.INSULT_STRINGS))
+    
 @run_async
 def table(bot: Bot, update: Update):
     reply_text = update.effective_message.reply_to_message.reply_text if update.effective_message.reply_to_message else update.effective_message.reply_text
@@ -121,38 +93,24 @@ def table(bot: Bot, update: Update):
 
 __help__ = """
  - /runs: reply a random string from an array of replies.
+ - /insult: Reply to a text with /insult for insults.
  - /slap: slap a user, or get slapped if not a reply.
  - /shrug : get shrug XD.
  - /table : get flip/unflip :v.
- - /decide : Randomly answers yes/no/maybe
- - /toss : Tosses A coin
- - /abuse : Abuses the cunt
- - /bluetext : check urself :V
- - /roll : Roll a dice.
- - /rlg : Join ears,nose,mouth and create an emo ;-;
 """
 
 RUNS_HANDLER = DisableAbleCommandHandler("runs", runs)
+INSULT_HANDLER = DisableAbleCommandHandler("insult", insult, pass_args=True)
 SLAP_HANDLER = DisableAbleCommandHandler("slap", slap, pass_args=True)
-ROLL_HANDLER = DisableAbleCommandHandler("roll", roll)
-TOSS_HANDLER = DisableAbleCommandHandler("toss", toss)
 SHRUG_HANDLER = DisableAbleCommandHandler("shrug", shrug)
-BLUETEXT_HANDLER = DisableAbleCommandHandler("bluetext", bluetext)
-RLG_HANDLER = DisableAbleCommandHandler("rlg", rlg)
-DECIDE_HANDLER = DisableAbleCommandHandler("decide", decide)
 TABLE_HANDLER = DisableAbleCommandHandler("table", table)
 
 dispatcher.add_handler(RUNS_HANDLER)
 dispatcher.add_handler(SLAP_HANDLER)
-dispatcher.add_handler(ROLL_HANDLER)
-dispatcher.add_handler(TOSS_HANDLER)
 dispatcher.add_handler(SHRUG_HANDLER)
-dispatcher.add_handler(BLUETEXT_HANDLER)
-dispatcher.add_handler(RLG_HANDLER)
-dispatcher.add_handler(DECIDE_HANDLER)
 dispatcher.add_handler(TABLE_HANDLER)
+dispatcher.add_handler(INSULT_HANDLER)
 
 __mod_name__ = "Fun"
-__command_list__ = ["runs", "slap", "roll", "toss", "shrug", "bluetext", "rlg", "decide", "table"]
-__handlers__ = [RUNS_HANDLER, SLAP_HANDLER, ROLL_HANDLER, TOSS_HANDLER, SHRUG_HANDLER, BLUETEXT_HANDLER, RLG_HANDLER,
-                DECIDE_HANDLER, TABLE_HANDLER]
+__command_list__ = ["runs", "slap", "insult", "shrug", "table"]
+__handlers__ = [RUNS_HANDLER, SLAP_HANDLER, SHRUG_HANDLER, INSULT_HANDLER, TABLE_HANDLER]

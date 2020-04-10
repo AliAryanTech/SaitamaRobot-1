@@ -8,10 +8,10 @@ from telegram.error import BadRequest
 from telegram.ext import CommandHandler, run_async, Filters
 from telegram.utils.helpers import mention_html
 
-from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, SUPPORT_USERS, DEV_USERS, TIGER_USERS, WHITELIST_USERS
+from tg_bot import dispatcher, OWNER_ID, SUDO_USERS
 from tg_bot.__main__ import STATS, USER_INFO, TOKEN
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import user_admin, sudo_plus
+from tg_bot.modules.helper_funcs.chat_status import user_admin
 from tg_bot.modules.helper_funcs.extraction import extract_user
 import tg_bot.modules.sql.users_sql as sql
 
@@ -139,20 +139,8 @@ def info(bot: Bot, update: Update, args: List[str]):
     if user.id == OWNER_ID:
         text += "\nThe Disaster level of this person is 'God'."
         disaster_level_present = True
-    elif user.id in DEV_USERS:
-        text += "\nThis member is one of 'Hero Association'."
-        disaster_level_present = True
     elif user.id in SUDO_USERS:
         text += "\nThe Disaster level of this person is 'Dragon'."
-        disaster_level_present = True
-    elif user.id in SUPPORT_USERS:
-        text += "\nThe Disaster level of this person is 'Demon'."
-        disaster_level_present = True
-    elif user.id in TIGER_USERS:
-        text += "\nThe Disaster level of this person is 'Tiger'."
-        disaster_level_present = True
-    elif user.id in WHITELIST_USERS:
-        text += "\nThe Disaster level of this person is 'Wolf'."
         disaster_level_present = True
 
     if disaster_level_present:
@@ -197,7 +185,6 @@ def markdown_help(bot: Bot, update: Update):
 
 
 @run_async
-@sudo_plus
 def stats(bot: Bot, update: Update):
     stats = "Current stats:\n" + "\n".join([mod.__stats__() for mod in STATS])
     result = re.sub(r'(\d+)', r'<code>\1</code>', stats)

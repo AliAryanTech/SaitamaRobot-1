@@ -6,7 +6,7 @@ from telegram.error import BadRequest
 from telegram.ext import MessageHandler, CommandHandler, Filters, run_async
 from telegram.utils.helpers import mention_html
 
-from tg_bot import dispatcher, WHITELIST_USERS, TIGER_USERS
+from tg_bot import dispatcher
 from tg_bot.modules.helper_funcs.chat_status import is_user_admin, user_admin, can_restrict, connection_status
 from tg_bot.modules.log_channel import loggable
 from tg_bot.modules.sql import antiflood_sql as sql
@@ -26,9 +26,7 @@ def check_flood(bot: Bot, update: Update) -> str:
         return log_message
 
     # ignore admins and whitelists
-    if (is_user_admin(chat, user.id) 
-            or user.id in WHITELIST_USERS
-            or user.id in TIGER_USERS):
+    if (is_user_admin(chat, user.id)):
         sql.update_flood(chat.id, None)
         return log_message
 
@@ -132,7 +130,7 @@ def flood(bot: Bot, update: Update):
         update.effective_message.reply_text(f"I'm not currently enforcing flood control{chat_name}!",
                                             parse_mode=ParseMode.HTML)
     else:
-        update.effective_message.reply_text(f"I'm currently muting users if they send "
+        update.effective_message.reply_text(f"I'm currently punching users if they send "
                                             f"more than {limit} consecutive messages{chat_name}.",
                                             parse_mode=ParseMode.HTML)
 
@@ -154,8 +152,6 @@ __help__ = """
 
 *Admin only:*
  - /setflood <int/'no'/'off'>: enables or disables flood control
- Example: /setflood 10
- This will mute users if they send more than 10 messages in a row, bots are ignored.
 """
 
 FLOOD_BAN_HANDLER = MessageHandler(Filters.all & ~Filters.status_update & Filters.group, check_flood)

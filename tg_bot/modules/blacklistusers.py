@@ -7,17 +7,15 @@ from telegram.ext import CommandHandler, run_async
 from telegram.utils.helpers import mention_html
 
 import tg_bot.modules.sql.blacklistusers_sql as sql
-from tg_bot import dispatcher, OWNER_ID, DEV_USERS, SUDO_USERS, WHITELIST_USERS, SUPPORT_USERS
-from tg_bot.modules.helper_funcs.chat_status import dev_plus
+from tg_bot import dispatcher, OWNER_ID, SUDO_USERS
 from tg_bot.modules.helper_funcs.extraction import extract_user_and_text, extract_user
 from tg_bot.modules.log_channel import gloggable
 
-BLACKLISTWHITELIST = [OWNER_ID] + DEV_USERS + SUDO_USERS + WHITELIST_USERS + SUPPORT_USERS
-BLABLEUSERS = [OWNER_ID] + DEV_USERS
+BLACKLISTWHITELIST = [OWNER_ID] + SUDO_USERS
+BLABLEUSERS = [OWNER_ID]
 
 
 @run_async
-@dev_plus
 @gloggable
 def bl_user(bot: Bot, update: Update, args: List[str]) -> str:
     message = update.effective_message
@@ -58,7 +56,6 @@ def bl_user(bot: Bot, update: Update, args: List[str]) -> str:
 
 
 @run_async
-@dev_plus
 @gloggable
 def unbl_user(bot: Bot, update: Update, args: List[str]) -> str:
     message = update.effective_message
@@ -99,7 +96,6 @@ def unbl_user(bot: Bot, update: Update, args: List[str]) -> str:
 
 
 @run_async
-@dev_plus
 def bl_users(bot: Bot, update: Update):
     users = []
 
