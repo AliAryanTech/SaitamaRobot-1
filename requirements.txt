@@ -11,4 +11,3 @@ nltk
 psutil
 aiohttp>=2.2.5
 googletrans
-jikanpy
