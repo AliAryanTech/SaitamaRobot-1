@@ -17,11 +17,9 @@ from tg_bot.modules.helper_funcs.chat_status import is_user_admin
 from tg_bot.modules.helper_funcs.misc import paginate_modules
 
 PM_START_TEXT = """
-Hi {}, my name is {}! If you have any questions on how to use me, read /help
+Hey {}, My name is {}! I'm here to help you manage your groups!
 
-I'm using this repo ==> [Saitama's Repo](github.com/AnimeKaizoku/SaitamaRobot) 
-See [Basic Configuration Checklist](t.me/OnePunchUpdates/29) on how to secure your groups.
-The support group chat is at @OnePunchSupport
+Tap here ==> /help to find out more about how to use me to my full potential.
 """
 
 HELP_STRINGS = """
