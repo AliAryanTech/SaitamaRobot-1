@@ -4,6 +4,7 @@ from time import sleep
 from telegram import Bot, Update, TelegramError, ParseMode
 from telegram.error import BadRequest
 from telegram.utils.helpers import escape_markdown
+from haruka.modules.helper_funcs.filters import CustomFilters
 from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 
 import tg_bot.modules.sql.users_sql as sql
