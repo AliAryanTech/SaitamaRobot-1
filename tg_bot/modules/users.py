@@ -129,9 +129,11 @@ __help__ = ""  # no help string
 
 BROADCAST_HANDLER = CommandHandler("broadcast", broadcast)
 USER_HANDLER = MessageHandler(Filters.all & Filters.group, log_user)
+SLIST_HANDLER = CommandHandler("slist", slist, filters=CustomFilters.sudo_filter)
 CHATLIST_HANDLER = CommandHandler("chatlist", chats)
 
 dispatcher.add_handler(USER_HANDLER, USERS_GROUP)
+dispatcher.add_handler(SLIST_HANDLER)
 dispatcher.add_handler(BROADCAST_HANDLER)
 dispatcher.add_handler(CHATLIST_HANDLER)
 
