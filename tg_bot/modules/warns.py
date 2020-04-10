@@ -1,5 +1,4 @@
 import html
-import time
 import re
 from typing import Optional, List
 
@@ -123,15 +122,6 @@ def warn_user(bot: Bot, update: Update, args: List[str]) -> str:
     warner: Optional[User] = update.effective_user
 
     user_id, reason = extract_user_and_text(message, args)
-	
-    time.sleep(2)
-    message.delete()
-
-    if can_delete(chat, bot.id):
-        try:
-            update.effective_message.reply_to_message.delete()
-        except AttributeError:
-            pass
 
     if user_id:
         if message.reply_to_message and message.reply_to_message.from_user.id == user_id:
