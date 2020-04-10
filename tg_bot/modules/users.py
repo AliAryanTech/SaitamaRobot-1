@@ -1,13 +1,14 @@
 from io import BytesIO
 from time import sleep
 
-from telegram import Bot, Update, TelegramError
+from telegram import Bot, Update, TelegramError, ParseMode
 from telegram.error import BadRequest
+from telegram.utils.helpers import escape_markdown
 from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 
 import tg_bot.modules.sql.users_sql as sql
 
-from tg_bot import dispatcher, OWNER_ID, LOGGER
+from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, LOGGER
 
 USERS_GROUP = 4
 
@@ -83,6 +84,23 @@ def log_user(bot: Bot, update: Update):
     if msg.forward_from:
         sql.update_user(msg.forward_from.id,
                         msg.forward_from.username)
+
+
+@run_async
+def slist(bot: Bot, update: Update):
+    message = update.effective_message
+    text1 = "My sudo users are:"
+    for user_id in SUDO_USERS:
+        try:
+            user = bot.get_chat(user_id)
+            name = "[{}](tg://user?id={})".format(user.first_name + (user.last_name or ""), user.id)
+            if user.username:
+                name = escape_markdown("@" + user.username)
+            text1 += "\n - `{}`".format(name)
+        except BadRequest as excp:
+            if excp.message == 'Chat not found':
+                text1 += "\n - ({}) - not found".format(user_id)
+    message.reply_text(text1 + "\n", parse_mode=ParseMode.MARKDOWN)
 
 
 @run_async
