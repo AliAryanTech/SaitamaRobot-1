@@ -11,7 +11,7 @@ from telegram.utils.helpers import mention_html
 
 import tg_bot.modules.sql.global_bans_sql as sql
 from tg_bot import dispatcher, OWNER_ID, SUDO_USERS, STRICT_GBAN, GBAN_LOGS
-from tg_bot.modules.helper_funcs.chat_status import user_admin, is_user_admin
+from tg_bot.modules.helper_funcs.chat_status import user_admin, can_delete, is_user_admin
 from tg_bot.modules.helper_funcs.extraction import extract_user, extract_user_and_text
 from tg_bot.modules.helper_funcs.misc import send_to_list
 from tg_bot.modules.sql.users_sql import get_all_chats
@@ -54,6 +54,15 @@ def gban(bot: Bot, update: Update, args: List[str]):
     log_message = ""
 
     user_id, reason = extract_user_and_text(message, args)
+	
+    time.sleep(2)
+    message.delete()
+
+    if can_delete(chat, bot.id):
+        try:
+            update.effective_message.reply_to_message.delete()
+        except AttributeError:
+            pass
 
     if not user_id:
         message.reply_text("You don't seem to be referring to a user.")

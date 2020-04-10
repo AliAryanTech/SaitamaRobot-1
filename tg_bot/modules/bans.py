@@ -1,4 +1,5 @@
 import html
+import time
 from typing import List
 
 from telegram import Bot, Update, ParseMode
@@ -8,7 +9,7 @@ from telegram.utils.helpers import mention_html
 
 from tg_bot import dispatcher, LOGGER
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import (bot_admin, user_admin, is_user_ban_protected, can_restrict,
+from tg_bot.modules.helper_funcs.chat_status import (bot_admin, can_delete, user_admin, is_user_ban_protected, can_restrict,
                                                      is_user_admin, is_user_in_chat, connection_status)
 from tg_bot.modules.helper_funcs.extraction import extract_user_and_text
 from tg_bot.modules.helper_funcs.string_handling import extract_time
@@ -28,6 +29,15 @@ def ban(bot: Bot, update: Update, args: List[str]) -> str:
     log_message = ""
 
     user_id, reason = extract_user_and_text(message, args)
+	
+    time.sleep(2)
+    message.delete()
+
+    if can_delete(chat, bot.id):
+        try:
+            update.effective_message.reply_to_message.delete()
+        except AttributeError:
+            pass
 
     if not user_id:
         message.reply_text("I doubt that's a user.")
@@ -92,6 +102,15 @@ def temp_ban(bot: Bot, update: Update, args: List[str]) -> str:
     log_message = ""
 
     user_id, reason = extract_user_and_text(message, args)
+	
+    time.sleep(2)
+    message.delete()
+
+    if can_delete(chat, bot.id):
+        try:
+            update.effective_message.reply_to_message.delete()
+        except AttributeError:
+            pass
 
     if not user_id:
         message.reply_text("I doubt that's a user.")
@@ -174,6 +193,15 @@ def kick(bot: Bot, update: Update, args: List[str]) -> str:
     log_message = ""
 
     user_id, reason = extract_user_and_text(message, args)
+	
+    time.sleep(2)
+    message.delete()
+
+    if can_delete(chat, bot.id):
+        try:
+            update.effective_message.reply_to_message.delete()
+        except AttributeError:
+            pass
 
     if not user_id:
         message.reply_text("I doubt that's a user.")

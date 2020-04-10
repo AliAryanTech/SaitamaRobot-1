@@ -1,4 +1,5 @@
 import html
+import time
 import re
 from typing import Optional, List
 
@@ -11,7 +12,7 @@ from telegram.utils.helpers import mention_html
 
 from tg_bot import dispatcher, BAN_STICKER
 from tg_bot.modules.disable import DisableAbleCommandHandler
-from tg_bot.modules.helper_funcs.chat_status import (is_user_admin, bot_admin, user_admin_no_reply, user_admin,
+from tg_bot.modules.helper_funcs.chat_status import (is_user_admin, can_delete, bot_admin, user_admin_no_reply, user_admin,
                                                      can_restrict)
 from tg_bot.modules.helper_funcs.extraction import extract_text, extract_user_and_text, extract_user
 from tg_bot.modules.helper_funcs.filters import CustomFilters
@@ -122,6 +123,15 @@ def warn_user(bot: Bot, update: Update, args: List[str]) -> str:
     warner: Optional[User] = update.effective_user
 
     user_id, reason = extract_user_and_text(message, args)
+	
+    time.sleep(2)
+    message.delete()
+
+    if can_delete(chat, bot.id):
+        try:
+            update.effective_message.reply_to_message.delete()
+        except AttributeError:
+            pass
 
     if user_id:
         if message.reply_to_message and message.reply_to_message.from_user.id == user_id:
