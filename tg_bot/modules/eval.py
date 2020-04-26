@@ -21,7 +21,6 @@ from telegram import ParseMode
 from telegram.ext import CommandHandler, run_async
 
 from tg_bot import dispatcher, LOGGER
-from tg_bot.modules.helper_funcs.chat_status import dev_plus
 
 namespaces = {}
 
@@ -51,13 +50,11 @@ def send(msg, bot, update):
     bot.send_message(chat_id=update.effective_chat.id, text=f"`{msg}`", parse_mode=ParseMode.MARKDOWN)
 
 
-@dev_plus
 @run_async
 def evaluate(bot, update):
     send(do(eval, bot, update), bot, update)
 
 
-@dev_plus
 @run_async
 def execute(bot, update):
     send(do(exec, bot, update), bot, update)
@@ -115,7 +112,6 @@ def do(func, bot, update):
             return result
 
 
-@dev_plus
 @run_async
 def clear(bot, update):
     log_input(update)
